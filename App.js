@@ -1,12 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { FacultyRegistration } from './pages/FacultyRegistration';
+import { ApplicationProvider, Layout } from '@ui-kitten/components';
+import * as eva from '@eva-design/eva'; // Import Eva design system
+import { UploadPaper } from './pages/UploadPaper';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ApplicationProvider {...eva} theme={eva.light}>
+      <View style={styles.container}>
+        <UploadPaper />
+      </View>
+    </ApplicationProvider>
   );
 }
 
