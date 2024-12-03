@@ -1,54 +1,31 @@
-import React, { useState}from "react";
-import {
-  Input,
-  IndexPath,
-  Layout,
-  Select,
-  SelectItem
-} from "@ui-kitten/components";
-import { View, StyleSheet, View, StyleSheet } from "react-native";
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
-import Button from "../components/Button";
 
+const UploadPaper = () => {
+  const [fileName, setFileName] = useState(null);
 
-export const UploadPaper = () => {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
+  const handleFileUpload = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: 'application/pdf', // Restrict to PDF files
+    });
 
-  const handleUpload = async () => {
-    // try {
-    //   const doc = await DocumentPicker.pick();
-    //   console.log(doc);
-    // } catch (err) {
-    //   if (DocumentPicker.isCancel(err)) {
-    //     console.log("User cancelled the upload", err);
-    //   } else {
-    //     console.log(err);
-    //   }
-    // }
-    //use expo DocumentPicker
-    console.log("Uploading Paper");
-  }
+    if (result.type === 'success') {
+      setFileName(result.name);
+      Alert.alert('File Selected', `You selected: ${result.name}`);
+      console.log('File Details:', result);
+    } else {
+      console.log('File selection canceled');
+    }
+  };
 
   return (
-    <View>
-      
-      <Input
-        placeholder="Subject Code"
-        value={email}
-        onChangeText={(nextValue) => setEmail(nextValue)}
-      />
-      <Input
-        placeholder="Year"
-        value={password}
-        onChangeText={(nextValue) => setPassword(nextValue)}
-      />
-      <Input
-        placeholder="Branch"
-        value={password}
-        onChangeText={(nextValue) => setPassword(nextValue)}
-      />
+    <View style={styles.container}>
+      <Text style={styles.title}>Upload Your Paper</Text>
+      <TouchableOpacity style={styles.button} onPress={handleFileUpload}>
+        <Text style={styles.buttonText}>Upload PDF</Text>
+      </TouchableOpacity>
+      {fileName && <Text style={styles.fileName}>Selected: {fileName}</Text>}
     </View>
   );
 };
@@ -56,8 +33,32 @@ export const UploadPaper = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E6E6FA',
-    alignItems: 'center',
     justifyContent: 'center',
-  }
+    alignItems: 'center',
+    backgroundColor: '#f9f9f9',
+    padding: 20,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#007bff',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  fileName: {
+    marginTop: 15,
+    fontSize: 16,
+    color: '#333',
+  },
 });
+
+export default UploadPaper;
+
