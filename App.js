@@ -13,7 +13,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="FormPage">
+      <Stack.Navigator initialRouteName="Login">
          <Stack.Screen 
           name="UploadPaper" 
           component={UploadPaper} 
