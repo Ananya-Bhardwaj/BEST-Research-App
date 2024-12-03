@@ -4,6 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import UploadPaper from './Screens/UploadPaper'; // Import the UploadPaper page
 import { Text } from 'react-native';
 import LoginScreen from './Screens/LoginScreen';
+import FacultyRegistration from './Screens/FacultyRegistration';
+import FormPage from './Screens/FormPage';
 
 
 const Stack = createStackNavigator();
@@ -11,7 +13,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="FormPage">
          <Stack.Screen 
           name="UploadPaper" 
           component={UploadPaper} 
@@ -21,6 +23,16 @@ export default function App() {
           name="Login" 
           component={LoginScreen} 
           options={{ title: 'Login' }} 
+        />
+         <Stack.Screen 
+          name="Register" 
+          component={FacultyRegistration} 
+          options={{ title: 'Register' }} 
+        />
+         <Stack.Screen 
+          name="FormPage" 
+          component={FormPage} 
+          options={{ title: 'Form' }} 
         />
       </Stack.Navigator>
     </NavigationContainer>

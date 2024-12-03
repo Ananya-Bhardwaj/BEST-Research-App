@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import * as Crypto from 'expo-crypto';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
+  const navigation = useNavigation();  
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -37,6 +40,10 @@ const LoginScreen = () => {
       />
 
       <Button title="Generate Public and Private Key" onPress={generateKeys} />
+
+      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+        <Text style={{ textAlign: 'center', marginTop: 20, color: 'blue' }}>Don't have an account? Register here</Text>
+      </TouchableOpacity>
     </View>
   );
 };
