@@ -1,25 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
-import { FacultyRegistration } from './pages/FacultyRegistration';
-import { ApplicationProvider, Layout } from '@ui-kitten/components';
-import * as eva from '@eva-design/eva'; // Import Eva design system
-import { UploadPaper } from './pages/UploadPaper';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import UploadPaper from './Screens/UploadPaper'; // Import the UploadPaper page
+import { Text } from 'react-native';
+import LoginScreen from './Screens/LoginScreen';
+
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <ApplicationProvider {...eva} theme={eva.light}>
-      <View style={styles.container}>
-        <UploadPaper />
-      </View>
-    </ApplicationProvider>
-  );
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+         <Stack.Screen 
+          name="UploadPaper" 
+          component={UploadPaper} 
+          options={{ title: 'Upload Paper' }} 
+        />
+         <Stack.Screen 
+          name="Login" 
+          component={LoginScreen} 
+          options={{ title: 'Login' }} 
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+);
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
