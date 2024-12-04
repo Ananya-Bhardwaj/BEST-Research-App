@@ -6,6 +6,7 @@ import { Text } from 'react-native';
 import LoginScreen from './Screens/LoginScreen';
 import FacultyRegistration from './Screens/FacultyRegistration';
 import FormPage from './Screens/FormPage';
+import NotificationPage from './Screens/Notification';
 
 
 const Stack = createStackNavigator();
@@ -34,6 +35,11 @@ export default function App() {
           component={FormPage} 
           options={{ title: 'Form' }} 
         />
+         {/* <Stack.Screen 
+          name="Notification" 
+          component={NotificationPage} 
+          options={{ title: 'Notification' }} 
+        /> */}
       </Stack.Navigator>
     </NavigationContainer>
 );

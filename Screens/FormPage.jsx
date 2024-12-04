@@ -1,24 +1,61 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Button, View, Text, TextInput, TouchableOpacity } from "react-native";
+import * as DocumentPicker from "expo-document-picker";
+import axios from "axios";
+import React from 'react';
+// import { apiUrl } from "./url";
 import RNPickerSelect from 'react-native-picker-select';
 
-const FormPage = () => {
-  const [subjectCode, setSubjectCode] = useState('');
-  const [year, setYear] = useState('');
-  const [branch, setBranch] = useState('');
-  const [examType, setExamType] = useState('');
-  const [faculty, setFaculty] = useState('');
+export default function FormPage() {
+  const [subjectCode, setSubjectCode] = React.useState("");
+  const [year, setYear] = React.useState("");
+  const [branch, setBranch] = React.useState("");
+  const [examType, setExamType] = React.useState("");
+  const [file, setFile] = React.useState(null);
+
+  const handleFileUpload = async () => {
+    try {
+      const docRes = await DocumentPicker.getDocumentAsync({
+        type: "*/*",
+      });
+      const formData = new FormData();
+      const assets = docRes.assets;
+      if (!assets) return;
+
+      setFile(assets[0]);
+  }
+  catch (error) {
+    console.error(error);
+  }
+};
 
   const handleSubmit = () => {
-    Alert.alert('Form Submitted', `Details:
-    - Subject Code: ${subjectCode}
-    - Year: ${year}
-    - Branch: ${branch}
-    - Exam Type: ${examType}`);
-  };
+      axios.post('http://192.168.1.14:5000/api/paper', {
+        pdf_id: file.file, 
+        subject_code: subjectCode,
+        year: year, 
+        branch: branch,
+        exam: examType,
+        faculty: "674a0e38763b85df4ad59554"
+      }, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then(response => {
+        console.log(response.data); // Handle successful upload response
+      })
+      .catch(error => {
+        console.error(error); // Handle upload errors
+      }); 
+      
+    } 
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.button} onPress={handleFileUpload}>
+        <Text style={styles.buttonText}>Upload PDF</Text>
+      </TouchableOpacity>
+
       <Text style={styles.label}>Subject Code</Text>
       <TextInput 
         style={styles.input}
@@ -42,7 +79,6 @@ const FormPage = () => {
         onChangeText={setBranch}
         placeholder="Enter Branch"
       />
-
       <Text style={styles.label}>Exam Type</Text>
       <RNPickerSelect
         onValueChange={setExamType}
@@ -64,7 +100,7 @@ const FormPage = () => {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -95,11 +131,10 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
+    marginBottom: 15,
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
   },
 });
-
-export default FormPage;
