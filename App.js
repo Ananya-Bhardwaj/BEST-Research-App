@@ -7,6 +7,8 @@ import LoginScreen from './Screens/LoginScreen';
 import FacultyRegistration from './Screens/FacultyRegistration';
 import FormPage from './Screens/FormPage';
 import NotificationPage from './Screens/Notification';
+import PolyVals from './Screens/PolyValues';
+import DecryptPage from './Screens/DecryptPage';
 
 
 const Stack = createStackNavigator();
@@ -14,7 +16,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="FormPage">
+      <Stack.Navigator initialRouteName="Login">
          <Stack.Screen 
           name="UploadPaper" 
           component={UploadPaper} 
@@ -23,7 +25,9 @@ export default function App() {
          <Stack.Screen 
           name="Login" 
           component={LoginScreen} 
-          options={{ title: 'Login' }} 
+          options={{ 
+            title: 'Login'
+          }} 
         />
          <Stack.Screen 
           name="Register" 
@@ -33,13 +37,23 @@ export default function App() {
          <Stack.Screen 
           name="FormPage" 
           component={FormPage} 
-          options={{ title: 'Form' }} 
+          options={{ title: 'Upload Paper' }} 
         />
-         {/* <Stack.Screen 
+         <Stack.Screen 
           name="Notification" 
           component={NotificationPage} 
           options={{ title: 'Notification' }} 
-        /> */}
+        />
+        <Stack.Screen 
+          name="PolyVals" 
+          component={PolyVals} 
+          options={{ title: 'Decrypt Paper'}} 
+        />
+        <Stack.Screen 
+          name="DecryptPage" 
+          component={DecryptPage} 
+          options={{ title: 'DecryptPage'}} 
+        />
       </Stack.Navigator>
     </NavigationContainer>
 );

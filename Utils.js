@@ -1,30 +1,50 @@
-function generatePolynomial(t, constantTerm, order) {
-    /**
-     * Generate a polynomial of degree t-1 with a constant term and random coefficients.
-     * 
-     * @param {number} t - The degree of the polynomial + 1.
-     * @param {number} constantTerm - The constant term of the polynomial.
-     * @param {number} order - The modulo for coefficients.
-     * @returns {Array<number>} - Array of coefficients of the polynomial.
-     */
-    const coefficients = [constantTerm];
-    for (let i = 1; i < t; i++) {
-        coefficients.push(Math.floor(Math.random() * order));
-    }
-    return coefficients;
+import Elliptic from 'elliptic';
+import { createHash } from 'react-native-crypto'
+
+// Initialize elliptic curve
+const EC = new Elliptic.ec("secp256k1");
+
+// Generate a key pair
+const keyPair = EC.genKeyPair();
+
+// Example: Export private and public keys
+const privateKey = keyPair.getPrivate("hex"); // Use securely
+const publicKey = keyPair.getPublic("hex"); // Share this
+
+export function hashPDF(pdfData) {
+  // Hash using SHA-256
+    const hash = createHash("sha256");
+    hash.update(pdfData);
+    const hashed = hash.digest("hex");
+  return hashed; // Returns a hex string of the hash
 }
 
+export function signPDF(pdfData, privateKey) {
+  const ec = new Elliptic.ec("secp256k1");
+  const keyPair = ec.keyFromPrivate(privateKey);
 
-function evaluatePolynomial(coefficients, x, order) {
-    /**
-     * Evaluate a polynomial at a given x modulo the order.
-     * 
-     * @param {Array<number>} coefficients - Array of coefficients of the polynomial.
-     * @param {number} x - The value at which to evaluate the polynomial.
-     * @param {number} order - The modulo for the result.
-     * @returns {number} - The result of the polynomial evaluation modulo order.
-     */
-    return coefficients.reduce((sum, coefficient, index) => {
-        return (sum + coefficient * Math.pow(x, index)) % order;
-    }, 0);
+  // Hash the PDF data
+  const hashedData = hashPDF(pdfData);
+
+  // Sign the hashed data
+  const signature = keyPair.sign(hashedData);
+
+  return {
+    signature: {
+      r: signature.r.toString("hex"),
+      s: signature.s.toString("hex"),
+    },
+    hash: hashedData,
+  };
+}
+
+export function verifySignature(pdfData, signature, publicKey) {
+  const ec = new Elliptic.ec("secp256k1");
+  const keyPair = ec.keyFromPublic(publicKey, "hex");
+
+  // Hash the PDF data
+  const hashedData = hashPDF(pdfData);
+
+  // Verify the signature
+  return keyPair.verify(hashedData, signature);
 }

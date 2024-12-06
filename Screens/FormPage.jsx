@@ -4,6 +4,9 @@ import axios from "axios";
 import React from 'react';
 // import { apiUrl } from "./url";
 import RNPickerSelect from 'react-native-picker-select';
+// import { hashPDF, signPDF, verifySignature } from "../Utils";
+// import * as FileSystem from 'expo-file-system';
+import { useNavigation } from "@react-navigation/native";
 
 export default function FormPage() {
   const [subjectCode, setSubjectCode] = React.useState("");
@@ -11,6 +14,8 @@ export default function FormPage() {
   const [branch, setBranch] = React.useState("");
   const [examType, setExamType] = React.useState("");
   const [file, setFile] = React.useState(null);
+
+  const navigation = useNavigation();
 
   const handleFileUpload = async () => {
     try {
@@ -22,6 +27,24 @@ export default function FormPage() {
       if (!assets) return;
 
       setFile(assets[0]);
+
+      // console.log(assets[0]);
+
+      // const pdfData = await FileSystem.readAsStringAsync(assets[0].uri, { encoding: FileSystem.EncodingType.Base64 });
+
+      // print(pdfData);
+
+        
+  // // Sign the PDF
+  // const { signature, hash } = signPDF(pdfData, privateKey);
+  
+  // console.log("Signature:", signature);
+  // console.log("Hash:", hash);
+  
+  // // Verify the Signature
+  // const isValid = verifySignature(pdfData, signature, publicKey);
+  // console.log("Signature valid:", isValid);
+  
   }
   catch (error) {
     console.error(error);
@@ -29,7 +52,7 @@ export default function FormPage() {
 };
 
   const handleSubmit = () => {
-      axios.post('http://192.168.1.14:5000/api/paper', {
+      axios.post('http://192.168.199.97:5000/api/paper', {
         pdf_id: file.file, 
         subject_code: subjectCode,
         year: year, 
@@ -42,6 +65,7 @@ export default function FormPage() {
         }
       })
       .then(response => {
+        navigation.navigate('PolyVals', {"id": response.data.id});
         console.log(response.data); // Handle successful upload response
       })
       .catch(error => {
@@ -90,7 +114,7 @@ export default function FormPage() {
         ]}
         style={{
           inputIOS: styles.dropdown,
-          inputAndroid: styles.dropdown,
+          inputAndroid: styles.dropdown
         }}
         placeholder={{ label: 'Select Exam Type', value: null }}
       />
@@ -132,6 +156,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 15,
+    marginTop: 15
   },
   buttonText: {
     color: '#fff',

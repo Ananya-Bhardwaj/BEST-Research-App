@@ -1,23 +1,78 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import * as Crypto from 'expo-crypto';
+import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { ec as EC } from 'elliptic'; // For generating public/private keys
 
 const LoginScreen = () => {
-  const navigation = useNavigation();  
-
-  const [username, setUsername] = useState('');
+  const navigation = useNavigation();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [privateKey, setPrivateKey] = useState('');
+  const [publicKey, setPublicKey] = useState('');
 
-  const generateKeys = async () => {
+  // Login handler
+  const handleLogin = async () => {
     try {
-      const privateKey = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, username + Date.now());
-      const publicKey = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, privateKey);
+      const response = await axios.post('http://192.168.199.97:5000/api/users/verify', {
+        email,
+        password,
+      });
+      console.log(response)
+      const userId = response.data.user_id; // Capture the generated ID
+      console.log('Generated User ID:', userId);
 
-      Alert.alert(`Keys Generated, Public Key: ${publicKey}\nPrivate Key: ${privateKey}`);
+    axios.get(`http://192.168.199.97:5000/user_share/${userId}`).then
+
+      ((response) => {
+        console.log(response.data.data)
+        if (response.data && response.data.data ){
+          navigation.navigate('FormPage');
+        }
+
+        else{
+          generateKeyPair(userId);
+          navigation.navigate('FormPage');
+        }
+
+      }).catch((err) => console.log(err))
+  
+    
     } catch (error) {
-      console.error('Error generating keys:', error);
-      Alert.alert('Error', 'Failed to generate keys');
+      if (error.response && error.response.status === 401) {
+        Alert.alert('Login Failed', 'Invalid email or password');
+      } else {
+        console.error('Login error:', error);
+        Alert.alert('Error', 'Something went wrong. Please try again.');
+      }
+    }
+  };
+
+  // Generate Public/Private Key Pair
+  const generateKeyPair = async (userId) => {
+    try {
+      // Initialize elliptic curve with secp256k1
+      const ec = new EC('secp256k1');
+
+      // Generate key pair
+      const keyPair = ec.genKeyPair();
+      const privateKeyHex = keyPair.getPrivate('hex'); // Private key in hex format
+      const publicKeyHex = keyPair.getPublic('hex'); // Public key in hex format
+
+      // Save keys to state
+      setPrivateKey(privateKeyHex);
+      setPublicKey(publicKeyHex);
+
+      // Send public key to the backend
+      await axios.post('http://192.168.199.97:5000/api/usershare', {
+        user_id: userId,
+        public_key: publicKeyHex,
+      });
+
+      Alert.alert('Success', 'Keys Generated and Shared Successfully!');
+    } catch (error) {
+      console.error('Error generating keys or sharing with backend:', error);
+      Alert.alert('Error', 'Failed to generate or share keys.');
     }
   };
 
@@ -27,22 +82,26 @@ const LoginScreen = () => {
 
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
-        secureTextEntry
         value={password}
         onChangeText={setPassword}
+        secureTextEntry
       />
 
-      <Button title="Generate Public and Private Key" onPress={generateKeys} />
+      <Button title="Login" onPress={handleLogin} />
 
-      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text style={{ textAlign: 'center', marginTop: 20, color: 'blue' }}>Don't have an account? Register here</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <Text style={{ textAlign: 'center', marginTop: 20, color: 'blue' }}>
+          Don't have an account? Register here
+        </Text>
       </TouchableOpacity>
     </View>
   );

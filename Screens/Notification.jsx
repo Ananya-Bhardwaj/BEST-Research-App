@@ -5,7 +5,7 @@ import { usePushNotifications } from "../usePushNotifications";
 export default function NotificationPage() {
   const { expoPushToken, notification } = usePushNotifications();
   const data = JSON.stringify(notification, undefined, 2);
-  console.log(expoPushToken.data);
+  console.log(expoPushToken);
   return (
     <View style={styles.container}>
       <Text>Token: {expoPushToken?.data ?? ""}</Text>
