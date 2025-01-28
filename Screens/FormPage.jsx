@@ -52,7 +52,7 @@ export default function FormPage() {
 };
 
   const handleSubmit = () => {
-      axios.post('http://192.168.199.97:5000/api/paper', {
+      axios.post(`${process.env.BACKEND_URL}/api/paper`, {
         pdf_id: file.file, 
         subject_code: subjectCode,
         year: year, 

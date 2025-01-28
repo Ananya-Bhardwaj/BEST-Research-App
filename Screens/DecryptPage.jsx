@@ -8,7 +8,7 @@ const DecryptPage = () => {
 
     const handleDecryptPaper = () => {
         // id = "675229a303de3031eab4a0ac";
-        axios.get(`http://192.168.199.97:5000/api/paper/${id}`).then((response) => {
+        axios.get(`${process.env.BACKEND_URL}/api/paper/${id}`).then((response) => {
           setPaperText(response.data);
         }).catch((error) => {console.log(error)});
       };

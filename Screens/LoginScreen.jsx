@@ -13,8 +13,9 @@ const LoginScreen = () => {
 
   // Login handler
   const handleLogin = async () => {
+    console.log(process.env.BACKEND_URL)
     try {
-      const response = await axios.post('http://192.168.199.97:5000/api/users/verify', {
+      const response = await axios.post(`${process.env.BACKEND_URL}/api/users/verify`, {
         email,
         password,
       });
@@ -22,7 +23,7 @@ const LoginScreen = () => {
       const userId = response.data.user_id; // Capture the generated ID
       console.log('Generated User ID:', userId);
 
-    axios.get(`http://192.168.199.97:5000/user_share/${userId}`).then
+    axios.get(`${process.env.BACKEND_URL}/user_share/${userId}`).then
 
       ((response) => {
         console.log(response.data.data)
@@ -64,7 +65,7 @@ const LoginScreen = () => {
       setPublicKey(publicKeyHex);
 
       // Send public key to the backend
-      await axios.post('http://192.168.199.97:5000/api/usershare', {
+      await axios.post(`${process.env.BACKEND_URL}/api/usershare`, {
         user_id: userId,
         public_key: publicKeyHex,
       });

@@ -10,7 +10,7 @@ const FacultyRegistration = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://192.168.199.97:5000/api/users/register', {
+      const response = await axios.post(`${process.env.BACKEND_URL}/api/users/register`, {
         email,
         password,
         name,

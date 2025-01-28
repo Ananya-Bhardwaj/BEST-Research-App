@@ -50,7 +50,7 @@ export default function PolynomialPage({route}) {
     const payload = { uid: userId, polyvalues: sharesAsStrings };
 
     try {
-      const response = await axios.post("http://192.168.199.97:5000/api/userpoly", payload);
+      const response = await axios.post(`${process.env.BACKEND_URL}/api/userpoly`, payload);
       console.log("Response from server:", response.data);
       Alert.alert("Success", "Polynomials and Shares sent to server successfully!");
     } catch (error) {
@@ -61,7 +61,7 @@ export default function PolynomialPage({route}) {
 
   const getAllAdminsAndShares = () => {
     axios
-      .get("http://192.168.199.97:5000/api/admins")
+      .get(`${process.env.BACKEND_URL}/api/admins`)
       .then((response) => {
         const adminUserIds = response.data;
         console.log("Admin User IDs:", adminUserIds);
@@ -80,7 +80,7 @@ export default function PolynomialPage({route}) {
 
         const promises = sortedAdmins.map((admin) => {
           const adminIdStr = String(admin._id);
-          const url = `http://192.168.199.97:5000/api/user_poly_vals/${adminIdStr}`;
+          const url = `${process.env.BACKEND_URL}/api/user_poly_vals/${adminIdStr}`;
 
           return axios
             .get(url)
@@ -130,7 +130,7 @@ export default function PolynomialPage({route}) {
 
   const handleDecryptPaper = () => {
     id = "6752958f77e6b9809f823327";
-    axios.get(`http://192.168.199.97:5000/api/paper/${id}`).then((response) => {
+    axios.get(`${process.env.BACKEND_URL}/api/paper/${id}`).then((response) => {
         console.log(response)
         console.log(response.headers);
       setPaperText(response.data);
